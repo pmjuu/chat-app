@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { doc, onSnapshot } from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
+import { ref, get } from "firebase/database";
 import db from "../app/firebase";
 import styled from "styled-components";
+import { startChatting } from "../features/chattingSlice";
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,6 +27,7 @@ const Wrapper = styled.div`
   }
 
   img {
+    margin-right: 5px;
     height: 50px;
     width: 50px;
     border: 1px solid #ededed;
@@ -44,37 +46,46 @@ const Wrapper = styled.div`
   .chat-info span {
     margin: 3px;
   }
+
+  .timestamp {
+    text-align: right;
+  }
 `;
 
-export default function Chat({ chatId, onChattingStart }) {
-  const chatState = useSelector(state => state.chat);
-  const currentUserId = chatState[chatId].userId;
-  const lastMessageId = chatState[chatId].messageIds.at(-1);
-
-  const currentUserInfo = useSelector(state => state.user[currentUserId]);
-  const { id, imageURL, name } = currentUserInfo;
-
-  const [lastMessage, setLastMessage] = useState({});
+export default function Chat({ chatId }) {
+  const dispatch = useDispatch();
+  const [chatInfo, setChatInfo] = useState(null);
+  const [lastMessage, setLastMessage] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(doc(db, "messages", lastMessageId), (doc) => {
-      const { createdAt, text, userId } = doc.data();
-      const stringCreatedAt = JSON.stringify(createdAt.toDate()).slice(1, 17).replace("T", " ");
-      setLastMessage({ id: doc.id, createdAt: stringCreatedAt, text: text, userId: userId });
-    });
+    get(ref(db, `chats/${chatId}`)).then(snapshot => setChatInfo(snapshot.val()));
   }, []);
 
+  function handleChatClick() {
+    dispatch(startChatting({ currentUserId: chatInfo.userId, currentChatId: chatId }));
+  }
+
+  const user = useSelector(state => state.user[chatInfo?.userId]);
+
+  if (chatInfo) {
+    get(ref(db, `chats/${chatId}/messages`)).then(snapshot => {
+      const messages = snapshot.val();
+      const lastMessageId = Object.keys(chatInfo.messages).at(-1);
+      setLastMessage(messages[lastMessageId]);
+    });
+  }
+
   return (
-    <Wrapper onClick={() => {onChattingStart(chatId)}}>
+    <Wrapper onClick={handleChatClick}>
       <div>
-        <img src={imageURL} alt="profile image" />
+        <img src={user?.imageURL} alt="profile image" />
       </div>
       <div className="chat-info">
-        <span>{name}</span>
-        <p>{lastMessage.text}</p>
+        <span>{user?.name}</span>
+        <p>{lastMessage?.text}</p>
       </div>
-      <div>
-        {lastMessage.createdAt}
+      <div className="timestamp">
+        {lastMessage?.createdAt.slice(0,16)}
       </div>
     </Wrapper>
   );

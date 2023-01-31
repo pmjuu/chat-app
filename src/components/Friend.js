@@ -1,5 +1,7 @@
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { startChatting } from "../features/chattingSlice";
+import useDefaultDB from "../hooks/useDefaultDB";
 
 const Wrapper = styled.div`
   display: flex;
@@ -44,15 +46,22 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function Friend({ userId, onChattingStart }) {
-  const userInfo = useSelector(state => state.user[userId]);
-  const { id, imageURL, name, chatId } = userInfo;
+export default function Friend({ id }) {
+  const dispatch = useDispatch();
+  const userInfo = useSelector(state => state.user[id]);
+  const { userId, imageURL, name, chatId } = userInfo;
+
+  function handleChatClick() {
+    dispatch(startChatting({ currentUserId: userId, currentChatId: chatId }));
+  }
+
+  useDefaultDB({ userId, chatId });
 
   return (
     <Wrapper>
       <img src={imageURL} alt={`${name}'s image`} />
       <span>{name}</span>
-      <button className="button-default" onClick={() => {onChattingStart(chatId)}}>Chat</button>
+      <button className="button-default" onClick={handleChatClick}>Chat</button>
     </Wrapper>
   );
 }

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { doc, onSnapshot } from "firebase/firestore";
+import { ref, get } from "firebase/database";
 import db from "../app/firebase";
 import styled from "styled-components";
-
 
 const Wrapper = styled.div`
   display: flex;
@@ -41,24 +40,19 @@ const Wrapper = styled.div`
 
   .timestamp {
     text-align: right;
-    overflow: scroll;
+    color: gray;
   }
-
 `;
 
-export default function Message({ messageId }) {
+export default function Message({ messageId, chatId }) {
+
   const [message, setMessage] = useState({});
   const user = useSelector(state => state.user[message?.userId]);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(doc(db, "messages", messageId), (doc) => {
-    const { createdAt, text, userId } = doc.data();
-    const stringCreatedAt = JSON.stringify(createdAt.toDate()).slice(1, 17).replace("T", " ");
-    setMessage({ id: doc.id, createdAt: stringCreatedAt, text: text, userId: userId });
-    });
+    get(ref(db, `chats/${chatId}/messages/${messageId}`))
+      .then(snapshot => setMessage(snapshot.val()));
   }, []);
-
-  // unsubscribe();
 
   return (
     <Wrapper>
@@ -70,7 +64,7 @@ export default function Message({ messageId }) {
         {message?.text}
       </div>
       <div className="timestamp">
-        at {message?.createdAt}
+        at {message?.createdAt?.slice(0,16)}
       </div>
     </Wrapper>
   );

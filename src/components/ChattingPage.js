@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
-import { getDatabase, ref, set } from "firebase/database";
+import { ref, set, get, push, query, orderByChild } from "firebase/database";
+import { orderBy } from "firebase/firestore";
 import db from "../app/firebase";
 import styled from "styled-components";
 import Message from "./Message";
-import { addMessage } from "../features/chatSlice";
+import { endChatting } from "../features/chattingSlice";
+import { format } from "date-fns";
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,64 +21,68 @@ const Wrapper = styled.div`
   padding: 3px;
 `;
 
-export default function ChattingPage({ chatId, onClose }) {
+export default function ChattingPage() {
   const dispatch = useDispatch();
-  const chat = useSelector(state => state.chat[chatId]);
-  const originalMessageList = chat.messageIds;
-  const userName = useSelector(state => state.user[chat.userId].name);
+  const userId = useSelector(state => state.chatting.userId);
+  const chatId = useSelector(state => state.chatting.chatId);
+  const userName = useSelector(state => state.user[userId].name);
 
-  // const messageIdList = chat.messageIds;
-  const [messageIdList, setMessageIdList] = useState(originalMessageList);
+  const [messageIdList, setMessageIdList] = useState(null);
 
-  const [newMessage, setNewMessage] = useState("");
+  useEffect(() => {
+    get(ref(db, `chats/${chatId}/messages`)).then(snapshot => {
+      if (snapshot.exists()) setMessageIdList(Object.keys(snapshot.val()));
+    }).catch(error => console.error(error));
+  }, []);
+
+  const [newText, setNewText] = useState("");
 
   function handleMessageChange(e) {
-    setNewMessage(e.target.value);
+    setNewText(e.target.value);
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const newDoc = {
-      text: newMessage,
-      userId: "itsme",
-      createdAt: Timestamp.fromDate(new Date())
-    }
-
     try {
-      const docRef = await addDoc(collection(db, "messages"), {
-        text: newMessage,
+      const newTime = new Date();
+      const newMessage = {
+        createdAt: format(newTime, "yyyy-MM-dd HH:mm:ss"),
+        text: newText,
         userId: "itsme",
-        createdAt: Timestamp.fromDate(new Date())
-      });
-      const newId = docRef.id;
-      // dispatch(addMessage({ chatId, newId }));
-      // set(ref(db, 'chats/eThePYVY8OuYVlowzean/messages' + newId), {
-      //   text: newMessage,
-      //   userId: "itsme",
-      //   createdAt: Timestamp.fromDate(new Date())
-      // });
+      };
+      push(ref(db, 'messages'), newMessage);
+      push(ref(db, `chats/${chatId}/messages`), newMessage);
+      setNewText("");
 
-      setNewMessage("");
-      console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-      console.log("Error adding document", e);
+      // push(ref(db, 'messages'), newMessage).then(pushedRef => {
+      //   const pushedId = JSON.stringify(pushedRef).slice(-21, -1);
+      //   set(ref(db, `chats/${chatId}/messages/${pushedId}`), newMessage);
+      // });
+    } catch (error) {
+      console.log("Error adding document", error);
     }
+
+    get(ref(db, `chats/${chatId}/messages`)).then(snapshot => {
+      setMessageIdList(Object.keys(snapshot.val()));
+    }).catch(error => console.error(error));
+
+
   }
 
   return (
     <Wrapper>
       <div>
-        <button onClick={onClose}>Close</button>
+        <button onClick={() => dispatch(endChatting())}>Close</button>
       </div>
       <div>
         <h1>Chat with {userName}</h1>
       </div>
       <div className="message-list">
-        {messageIdList.map(id => <Message key={id} messageId={id} />)}
+        {messageIdList && messageIdList.map(id => <Message key={id} messageId={id} chatId={chatId} />)}
       </div>
       <form onSubmit={handleSubmit}>
-        <input value={newMessage} onChange={handleMessageChange} placeholder="type your message"/>
+        <input value={newText} onChange={handleMessageChange} placeholder="type your message"/>
         <button type="submit">Send</button>
       </form>
     </Wrapper>

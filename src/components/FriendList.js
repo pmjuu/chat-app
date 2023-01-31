@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function FriendList({ onChattingStart }) {
+export default function FriendList() {
   const [userData, setUserData] = useState(null);
 
   const userState = useSelector(state => state.user);
@@ -45,7 +45,7 @@ export default function FriendList({ onChattingStart }) {
         <button onClick={handleSortClick}>Sort</button>
       </div>
       <div className="friend-list">
-        {userData?.allIds.map((id) => <Friend key={id} userId={id} onChattingStart={onChattingStart} />)}
+        {userData?.allIds.map((userId) => <Friend key={userId} id={userId} />)}
       </div>
     </Wrapper>
   );
