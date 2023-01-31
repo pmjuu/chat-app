@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   display: flex;
@@ -6,11 +7,21 @@ const Wrapper = styled.div`
   justify-content: space-around;
   align-items: center;
 
-  background-color: white;
+  background-color: rgb(70, 70, 70);
+  color: white;
   border: 1px solid #ededed;
   border-radius: 5px;
-  box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.1);
-  padding: 3px;
+  box-shadow: 0px 1px 5px 1px rgba(255, 255, 255, 0.2);
+  margin: 10px 0;
+  padding: 5px;
+  width: 280px;
+
+  img {
+    height: 50px;
+    width: 50px;
+    border: 1px solid #ededed;
+    border-radius: 50%;
+  }
 
   .button-default {
     margin: 5px;
@@ -33,12 +44,15 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function Friend({ onChattingStart }) {
+export default function Friend({ userId, onChattingStart }) {
+  const userInfo = useSelector(state => state.user[userId]);
+  const { id, imageURL, name, chatId } = userInfo;
+
   return (
     <Wrapper>
-      <img src="" alt="profile image"/>
-      <span>name</span>
-      <button className="button-default" onClick={onChattingStart}>Chat</button>
+      <img src={imageURL} alt={`${name}'s image`} />
+      <span>{name}</span>
+      <button className="button-default" onClick={() => {onChattingStart(chatId)}}>Chat</button>
     </Wrapper>
   );
 }

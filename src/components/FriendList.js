@@ -1,8 +1,14 @@
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Friend from "./Friend";
 import Header from "./Header";
 
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   .search-sort {
     display: flex;
     flex-direction: row;
@@ -14,6 +20,20 @@ const Wrapper = styled.div`
 `;
 
 export default function FriendList({ onChattingStart }) {
+  const [userData, setUserData] = useState(null);
+
+  const userState = useSelector(state => state.user);
+  // console.log('test...', userData)
+
+  useEffect(() => {
+    const isFull = (obj) => Object.keys(obj).length !== 0;
+    isFull(userState) && setUserData(userState);
+  });
+
+  function handleSortClick() {
+
+  }
+
   return (
     <Wrapper>
       <Header />
@@ -22,10 +42,10 @@ export default function FriendList({ onChattingStart }) {
           <input placeholder="search name"></input>
           <input type="submit" value="🔍"/>
         </form>
-        <button>Sort by name</button>
+        <button onClick={handleSortClick}>Sort</button>
       </div>
-      <div>
-        <Friend onChattingStart={onChattingStart} />
+      <div className="friend-list">
+        {userData?.allIds.map((id) => <Friend key={id} userId={id} onChattingStart={onChattingStart} />)}
       </div>
     </Wrapper>
   );
