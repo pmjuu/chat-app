@@ -17,35 +17,73 @@ const Wrapper = styled.div`
 
     margin-bottom: 10px;
   }
+
+  .sort-button {
+    margin-left: 10px;
+  }
 `;
 
 export default function FriendList() {
-  const [userData, setUserData] = useState(null);
-
+  const [userIdList, setUserIdList] = useState(null);
   const userState = useSelector(state => state.user);
-  // console.log('test...', userData)
 
   useEffect(() => {
-    const isFull = (obj) => Object.keys(obj).length !== 0;
-    isFull(userState) && setUserData(userState);
-  });
+    setUserIdList(userState.allIds);
+  }, []);
+
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  function handleNameChange(e) {
+    setSearchKeyword(e.target.value);
+  }
+
+  function handleNameSubmit(e) {
+    e.preventDefault();
+
+    for (let id of userState.allIds) {
+      if (userState[id].name === searchKeyword) {
+        setSearchKeyword("");
+        return setUserIdList([id]);
+      }
+    }
+
+    return alert('there is no matching name');
+  }
+
+  const [isAscending, setIsAscending] = useState(true);
 
   function handleSortClick() {
+    const newUserIds = [];
+    const names = [...userState.allNames];
 
+    isAscending === true
+      ? names.sort()
+      : names.reverse();
+
+    for (let name of names) {
+      for (let id of userState.allIds) {
+        if (userState[id].name === name) {
+          newUserIds.push(id);
+        }
+      }
+    }
+
+    setUserIdList(newUserIds);
+    setIsAscending(status => !status);
   }
 
   return (
     <Wrapper>
       <Header />
       <div className="search-sort">
-        <form>
-          <input placeholder="search name"></input>
-          <input type="submit" value="🔍"/>
+        <form onSubmit={handleNameSubmit}>
+          <input value={searchKeyword} onChange={handleNameChange} placeholder="search name" required />
+          <input type="submit" value="🔍" />
         </form>
-        <button onClick={handleSortClick}>Sort</button>
+        <button onClick={handleSortClick} className="sort-button">Sort</button>
       </div>
       <div className="friend-list">
-        {userData?.allIds.map((userId) => <Friend key={userId} id={userId} />)}
+        {userIdList?.map((userId) => <Friend key={userId} id={userId} />)}
       </div>
     </Wrapper>
   );

@@ -4,6 +4,7 @@ import { ref, get } from "firebase/database";
 import db from "../app/firebase";
 import styled from "styled-components";
 import { startChatting } from "../features/chattingSlice";
+import format from "date-fns/format";
 
 const Wrapper = styled.div`
   display: flex;
@@ -40,11 +41,24 @@ const Wrapper = styled.div`
     justify-content: center;
 
     padding: 5px;
-    width: 150px;
   }
 
   .chat-info span {
     margin: 3px;
+  }
+
+  .chat-info .last-message {
+    width: 150px;
+    height: 2.4em;
+    line-height: 1.2em;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    word-wrap:break-word;
+    text-align: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: normal;
   }
 
   .timestamp {
@@ -77,16 +91,20 @@ export default function Chat({ chatId }) {
 
   return (
     <Wrapper onClick={handleChatClick}>
-      <div>
-        <img src={user?.imageURL} alt="profile image" />
-      </div>
-      <div className="chat-info">
-        <span>{user?.name}</span>
-        <p>{lastMessage?.text}</p>
-      </div>
-      <div className="timestamp">
-        {lastMessage?.createdAt.slice(0,16)}
-      </div>
+      {chatInfo && (
+        <>
+          <div>
+            <img src={user?.imageURL} alt="profile image" />
+          </div>
+          <div className="chat-info">
+            <span>{user?.name}</span>
+            <div className="last-message">{lastMessage?.text}</div>
+          </div>
+          <div className="timestamp">
+            {lastMessage && format(new Date(lastMessage?.createdAt?.total), 'yyyy-MM-dd HH:mm:ss')}
+          </div>
+        </>
+      )}
     </Wrapper>
   );
 }

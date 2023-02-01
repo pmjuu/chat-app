@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { ref, get } from "firebase/database";
 import db from "../app/firebase";
 import styled from "styled-components";
+import format from "date-fns/format";
 
 const Wrapper = styled.div`
   display: flex;
@@ -46,7 +47,7 @@ const Wrapper = styled.div`
 
 export default function Message({ messageId, chatId }) {
 
-  const [message, setMessage] = useState({});
+  const [message, setMessage] = useState(null);
   const user = useSelector(state => state.user[message?.userId]);
 
   useEffect(() => {
@@ -64,7 +65,7 @@ export default function Message({ messageId, chatId }) {
         {message?.text}
       </div>
       <div className="timestamp">
-        at {message?.createdAt?.slice(0,16)}
+        at {message && format(new Date(message?.createdAt?.total), 'yyyy-MM-dd HH:mm:ss')}
       </div>
     </Wrapper>
   );

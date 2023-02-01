@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { startChatting } from "../features/chattingSlice";
-import useDefaultDB from "../hooks/useDefaultDB";
 
 const Wrapper = styled.div`
   display: flex;
@@ -40,10 +39,6 @@ const Wrapper = styled.div`
     background-color: rgb(122, 173, 255);
     cursor: pointer;
   }
-
-  .button-default:active {
-    background-color: rgb(89, 127, 188);
-  }
 `;
 
 export default function Friend({ id }) {
@@ -54,8 +49,6 @@ export default function Friend({ id }) {
   function handleChatClick() {
     dispatch(startChatting({ currentUserId: userId, currentChatId: chatId }));
   }
-
-  useDefaultDB({ userId, chatId });
 
   return (
     <Wrapper>

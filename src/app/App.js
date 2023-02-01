@@ -4,10 +4,15 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import ChatList from "../components/ChatList";
 import ChattingPage from "../components/ChattingPage";
 import FriendList from "../components/FriendList";
+import useDefaultDB from "../hooks/useDefaultDB";
 
 export default function App() {
-
   const isChatting = useSelector(state => state.chatting.isChatting);
+
+  useDefaultDB({ userId: "itsme", chatId: "room0" });
+  useDefaultDB({ userId: "KbVTEKlAtAe1rHogTY9u", chatId: "room1" });
+  useDefaultDB({ userId: "smPDjH1b2wpz9KXDgpXq", chatId: "room2" });
+  useDefaultDB({ userId: "COvImeFBTixfSEYM1BLm", chatId: "room3" });
 
   return (
     <>
