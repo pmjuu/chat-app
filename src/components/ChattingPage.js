@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import db from "../app/firebase";
-import { ref, set, get, push, query, orderByChild } from "firebase/database";
+import { ref, set, get, push } from "firebase/database";
 import { Timestamp } from "firebase/firestore";
 import styled from "styled-components";
 import Message from "./Message";
@@ -46,7 +46,7 @@ export default function ChattingPage() {
   const [messageIdList, setMessageIdList] = useState(null);
 
   useEffect(() => {
-    get(ref(db, `chats/${chatId}/messages`), orderByChild('/lastMessage/createdAt/total')).then(snapshot => {
+    get(ref(db, `chats/${chatId}/messages`)).then(snapshot => {
       setMessageIdList(Object.keys(snapshot.val()));
     }).catch(error => console.error(error));
   }, []);
@@ -91,7 +91,7 @@ export default function ChattingPage() {
         {messageIdList && messageIdList.map(id => <Message key={id} messageId={id} chatId={chatId} />)}
       </div>
       <form onSubmit={handleSubmit}>
-        <input value={newText} onChange={handleMessageChange} placeholder="type your message"/>
+        <input value={newText} onChange={handleMessageChange} placeholder="type your message" />
         <button type="submit" className="button-default">Send</button>
       </form>
     </Wrapper>

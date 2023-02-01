@@ -35,8 +35,11 @@ const Wrapper = styled.div`
   .message-box {
     margin: 5px 0;
     padding: 3px 10px;
+    width: 255px;
     border: 1px solid #ededed;
     border-radius: 5px;
+
+    word-break: break-all;
   }
 
   .timestamp {
