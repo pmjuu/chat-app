@@ -57,8 +57,8 @@ export default function FriendList() {
     const names = [...userState.allNames];
 
     isAscending === true
-      ? names.sort()
-      : names.reverse();
+      ? names.sort((a, b) => a.localeCompare(b))
+      : names.sort((a, b) => b.localeCompare(a));
 
     for (let name of names) {
       for (let id of userState.allIds) {
