@@ -1,6 +1,8 @@
 import { ref, remove } from "firebase/database";
 import { db } from "../app/firebase";
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   display: flex;
@@ -36,6 +38,13 @@ const Wrapper = styled.div`
 `;
 
 export default function Setting() {
+  const login = useSelector(state => state.login);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (login.apiKey === process.env.REACT_APP_API_KEY) setIsAdmin(true);
+  }, []);
+
   function deleteAll(data) {
     remove(ref(db, `${data}`));
   }
@@ -46,8 +55,12 @@ export default function Setting() {
 
   return(
     <Wrapper>
-      <button className="button-default" onClick={() => deleteAll("chats")}>Delete All chats</button>
-      <button className="button-default" onClick={() => deleteAll("users")}>Delete All users</button>
+      {isAdmin
+        ? <div>
+            <button className="button-default" onClick={() => deleteAll("chats")}>Delete All chats</button>
+            <button className="button-default" onClick={() => deleteAll("users")}>Delete All users</button>
+          </div>
+        : null}
       <button onClick={handleGoogleLogout}>Log Out</button>
     </Wrapper>
   );
