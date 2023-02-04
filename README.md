@@ -1,4 +1,12 @@
 # Chat App
+배포한 사이트 -> https://pmjuu-chat.netlify.app/
+
+## Things to add..
+- 구글 로그인 정보를 반영합니다.
+- 새로고침해도 로그인 정보를 유지해야 합니다.
+- 친구 프로필 데이터도 firebase database로 이전할 계획입니다.
+- 프로필 정보를 변경할 수 있습니다.
+
 ## Explanation
 ### Overview
 - 친구 목록 페이지(`/friends`), 채팅 목록 페이지(`/chats`), 채팅 페이지(URL없음) 가 있습니다.
