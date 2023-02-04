@@ -4,6 +4,7 @@ const initialState = {
   isChatting: false,
   userId: null,
   chatId: null,
+  messageIds: [],
 };
 
 const chattingSlice = createSlice({
@@ -20,9 +21,10 @@ const chattingSlice = createSlice({
       state.isChatting = false;
       state.userId = null;
       state.chatId = null;
-    }
+    },
   },
 });
+
 
 export const { startChatting, endChatting } = chattingSlice.actions;
 export default chattingSlice.reducer;

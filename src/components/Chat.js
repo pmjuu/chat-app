@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ref, get } from "firebase/database";
-import db from "../app/firebase";
+import { db } from "../app/firebase";
 import styled from "styled-components";
 import { startChatting } from "../features/chattingSlice";
 import format from "date-fns/format";
@@ -9,30 +9,31 @@ import format from "date-fns/format";
 const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 
+  width: 100%;
+  margin: 5px 0;
   background-color: white;
   border: 1px solid #ededed;
   border-radius: 5px;
   box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.1);
   transition: 0.3s all ease;
-  margin: 10px 0;
-  padding: 3px;
-  width: 300px;
 
   :hover {
+    background-color: rgb(89, 127, 188);
     cursor: pointer;
     color: white;
-    background-color: rgb(89, 127, 188);
+  }
+
+  .left-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 
   img {
-    margin-right: 5px;
-    height: 50px;
-    width: 50px;
-    border: 1px solid #ededed;
-    border-radius: 50%;
+    margin: 5px 10px
   }
 
   .chat-info {
@@ -41,15 +42,18 @@ const Wrapper = styled.div`
     justify-content: center;
 
     padding: 5px;
+    text-align: left;
   }
-
-  .chat-info span {
-    margin: 3px;
+  .chat-info .user-name {
+    font-size: 1.1em;
+    font-weight: 600;
   }
 
   .chat-info .last-message {
     width: 150px;
     height: 2.4em;
+
+    margin-top: 3px;
     line-height: 1.2em;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -62,6 +66,8 @@ const Wrapper = styled.div`
   }
 
   .timestamp {
+    margin: 0 10px;
+    font-size: 0.8em;
     text-align: right;
   }
 `;
@@ -81,27 +87,27 @@ export default function Chat({ chatId }) {
 
   const user = useSelector(state => state.user[chatInfo?.userId]);
 
-  if (chatInfo) {
-    get(ref(db, `chats/${chatId}/messages`)).then(snapshot => {
-      const messages = snapshot.val();
-      const lastMessageId = Object.keys(chatInfo.messages).at(-1);
-      setLastMessage(messages[lastMessageId]);
-    });
-  }
+  useEffect(() => {
+    chatInfo && get(ref(db, `chats/${chatId}/lastMessage`))
+        .then(snapshot => setLastMessage(snapshot.val()));
+  }, [chatInfo])
 
   return (
     <Wrapper onClick={handleChatClick}>
       {chatInfo && (
         <>
-          <div>
-            <img src={user?.imageURL} alt="profile image" />
-          </div>
-          <div className="chat-info">
-            <span>{user?.name}</span>
-            <div className="last-message">{lastMessage?.text}</div>
+          <div className="left-section">
+            <div>
+              <img className="profile-image" src={user?.imageURL} alt="profile" />
+            </div>
+            <div className="chat-info">
+              <div className="user-name">{user?.name}</div>
+              <div className="last-message">{lastMessage?.text}</div>
+            </div>
           </div>
           <div className="timestamp">
-            {lastMessage && format(new Date(lastMessage?.createdAt?.total), 'yyyy-MM-dd HH:mm:ss')}
+            {lastMessage && format(new Date(lastMessage?.createdAt?.total), "yyyy.MM.dd.")}<br/>
+            {lastMessage && format(new Date(lastMessage?.createdAt?.total), "HH:mm:ss")}
           </div>
         </>
       )}

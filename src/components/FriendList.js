@@ -2,58 +2,72 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Friend from "./Friend";
-import Header from "./Header";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 
+  width: 100vw;
+  max-width: 400px;
+  height: 85vh;
+
   .search-sort {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 
+    width: 100%;
     margin-bottom: 10px;
   }
 
-  .sort-button {
-    margin-left: 10px;
+  .search-sort .button-default {
+    margin: 5px;
+    padding: 5px 10px;
+    color: rgb(122, 173, 255);
+    background-color: white;
+    border: 1px;
+    border-radius: 5px;
+    transition: 0.3s all ease;
+  }
+
+  .search-sort .button-default:hover {
+    color: white;
+    background-color: rgb(122, 173, 255);
+    cursor: pointer;
+  }
+
+  .friend-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+  }
+
+  .friend-list .alert {
+    color: white;
   }
 `;
 
 export default function FriendList() {
   const [userIdList, setUserIdList] = useState(null);
   const userState = useSelector(state => state.user);
-
-  useEffect(() => {
-    setUserIdList(userState.allIds);
-  }, []);
-
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  function handleNameChange(e) {
-    setSearchKeyword(e.target.value);
-  }
-
-  function handleNameSubmit(e) {
-    e.preventDefault();
-
+  useEffect(() => {
+    const inputUserIds = [];
     for (let id of userState.allIds) {
-      if (userState[id].name === searchKeyword) {
-        setSearchKeyword("");
-        return setUserIdList([id]);
-      }
+      (userState[id].name.includes(searchKeyword)) && inputUserIds.push(id);
     }
-
-    return alert('there is no matching name');
-  }
+    setUserIdList(inputUserIds);
+  }, [searchKeyword]);
 
   const [isAscending, setIsAscending] = useState(true);
 
   function handleSortClick() {
-    const newUserIds = [];
+    const sortedUserIds = [];
     const names = [...userState.allNames];
 
     isAscending === true
@@ -63,27 +77,25 @@ export default function FriendList() {
     for (let name of names) {
       for (let id of userState.allIds) {
         if (userState[id].name === name) {
-          newUserIds.push(id);
+          sortedUserIds.push(id);
         }
       }
     }
 
-    setUserIdList(newUserIds);
+    setUserIdList(sortedUserIds);
     setIsAscending(status => !status);
   }
 
   return (
     <Wrapper>
-      <Header />
       <div className="search-sort">
-        <form onSubmit={handleNameSubmit}>
-          <input value={searchKeyword} onChange={handleNameChange} placeholder="search name" required />
-          <input type="submit" value="🔍" />
-        </form>
-        <button onClick={handleSortClick} className="sort-button">Sort</button>
+        <input value={searchKeyword} onChange={e => setSearchKeyword(e.target.value)} placeholder="🔍 search name" required />
+        <button onClick={handleSortClick} className="button-default">Sort</button>
       </div>
       <div className="friend-list">
-        {userIdList?.map((userId) => <Friend key={userId} id={userId} />)}
+        {userIdList?.length
+          ? userIdList?.map((userId) => <Friend key={userId} id={userId} />)
+          : <div className="alert">There is no matching name</div>}
       </div>
     </Wrapper>
   );

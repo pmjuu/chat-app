@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import PropTypes from 'prop-types';
 import { ref, set } from "firebase/database";
-import db from "../app/firebase";
+import { db } from "../app/firebase";
 import { Timestamp } from "firebase/firestore";
 
 export default function useDefaultDB({ userId, chatId }) {

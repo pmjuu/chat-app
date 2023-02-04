@@ -7,45 +7,50 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
 
+  width: 100vw;
+  max-width: 400px;
+  height: 5vh;
+  margin-bottom: 10px;
   background-color: white;
   border: 1px solid #ededed;
   border-radius: 5px;
   box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.1);
-  width: 300px;
-  height: 50px;
-  margin-bottom: 10px;
 
   a {
+    width: 200px;
     text-decoration: none;
   }
 
   .button-default {
     margin: 5px;
     padding: 5px 10px;
-    font-size: 1em;
-    color: rgb(122, 173, 255);
     background-color: white;
     border: 1px solid #ededed;
     border-radius: 5px;
     transition: 0.3s all ease;
+
+    text-align: center;
+    color: rgb(90, 130, 200);
+  }
+
+  .button-default.button-header {
+    height: 2.5vh;
+    font-size: 1.3rem;
+    font-weight: 700;
   }
 
   .button-default:hover {
-    color: white;
-    background-color: rgb(122, 173, 255);
+    background-color: rgb(90, 130, 200);
     cursor: pointer;
-  }
-
-  .button-default:active {
-    background-color: rgb(89, 127, 188);
+    color: white;
   }
 `;
 
 export default function Header() {
   return (
     <Wrapper>
-      <Link to="/friends"><span className="button-default">Friends</span></Link>
-      <Link to="/chats"><span className="button-default">Chats</span></Link>
+      <Link to="/friends" className="button-default button-header">Friends</Link>
+      <Link to="/chats" className="button-default button-header">Chats</Link>
     </Wrapper>
   );
 }

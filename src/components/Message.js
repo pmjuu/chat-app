@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { ref, get } from "firebase/database";
-import db from "../app/firebase";
+import { ref, get, remove } from "firebase/database";
+import { db } from "../app/firebase";
 import styled from "styled-components";
 import format from "date-fns/format";
 
@@ -11,12 +11,12 @@ const Wrapper = styled.div`
   justify-content: space-around;
   align-items: top;
 
-  border: 1px solid #ededed;
-  border-radius: 5px;
-  box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.1);
   margin: 10px 0;
   padding: 5px;
-  width: 280px;
+  border: 1px solid #ededed;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0px 1px 5px 1px rgba(255, 255, 255, 0.3);
 
   .user-info {
     display: flex;
@@ -26,25 +26,37 @@ const Wrapper = styled.div`
 
   img {
     margin-right: 5px;
-    height: 50px;
-    width: 50px;
-    border: 1px solid #ededed;
-    border-radius: 50%;
   }
 
-  .message-box {
+  .text-box {
     margin: 5px 0;
     padding: 3px 10px;
-    width: 255px;
     border: 1px solid #ededed;
     border-radius: 5px;
-
-    word-break: break-all;
+    box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2);
+    white-space: pre-wrap;
   }
 
   .timestamp {
     text-align: right;
     color: gray;
+    font-size: 0.9rem;
+  }
+
+  .delete {
+    margin-left: 5px;
+    font-size: 0.9rem;
+    color: #AF4141;
+    background-color: white;
+    border: 1px solid #ededed;
+    border-radius: 5px;
+    transition: 0.3s all ease;
+
+    :hover {
+      background-color: #AF4141;
+      color: white;
+      cursor: pointer;
+    }
   }
 `;
 
@@ -58,17 +70,22 @@ export default function Message({ messageId, chatId }) {
       .then(snapshot => setMessage(snapshot.val()));
   }, []);
 
+  function deleteMessage() {
+    remove(ref(db, `chats/${chatId}/messages/${messageId}`));
+  }
+
   return (
     <Wrapper>
       <div className="user-info">
-        <img src={user?.imageURL} alt="profile image"/>
+        <img className="profile-image" src={user?.imageURL} alt="profile image"/>
         <span>{user?.name}</span>
       </div>
-      <div className="message-box">
+      <div className="text-box">
         {message?.text}
       </div>
       <div className="timestamp">
-        at {message && format(new Date(message?.createdAt?.total), 'yyyy-MM-dd HH:mm:ss')}
+        at {message && format(new Date(message?.createdAt?.total), 'yyyy.MM.dd. HH:mm:ss')}
+        <button className="delete" onClick={deleteMessage}>X</button>
       </div>
     </Wrapper>
   );

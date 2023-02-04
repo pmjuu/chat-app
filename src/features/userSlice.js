@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  allIds: ["itsme", "KbVTEKlAtAe1rHogTY9u", "smPDjH1b2wpz9KXDgpXq", "COvImeFBTixfSEYM1BLm"],
-  allNames: ["나", "rose", "백예린", "jisoo"],
+  allIds: ["itsme", "KbVTEKlAtAe1rHogTY9u", "smPDjH1b2wpz9KXDgpXq", "COvImeFBTixfSEYM1BLm", "yoonseoID"],
+  allNames: ["나", "rose", "백예린", "jisoo", "노윤서"],
   "itsme": {
     userId: "itsme",
     imageURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvyHuMUfucXd9HL6BtwU0eVmzGIrv11zhZmp3Kwz0ogjgn2QImMOwS752pDGJmd9qA_Iw&usqp=CAU",
@@ -26,6 +26,12 @@ const initialState = {
     imageURL: "https://blog.kakaocdn.net/dn/cYoXBb/btqIMWuY1qW/fSwZ4nWQ57n0cQFEXUxdd0/img.jpg",
     name: "jisoo",
     chatId: "room3",
+  },
+  "yoonseoID" : {
+    userId: "yoonseoID",
+    imageURL: "https://blog.kakaocdn.net/dn/ww3E6/btrLiBmU9Ek/XtrkkyZR3AvHWWtoxk4FN0/img.jpg",
+    name: "노윤서",
+    chatId: "room4",
   }
 };
 
