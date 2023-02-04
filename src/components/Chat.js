@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ref, onValue } from "firebase/database";
 import { db } from "../app/firebase";
 import styled from "styled-components";
@@ -79,17 +79,22 @@ export default function Chat({ chatId }) {
 
   useEffect(() => {
     onValue(ref(db, `chats/${chatId}`), snapshot => setChatInfo(snapshot.val()));
-  }, [chatId]);
+  }, []);
 
-  function handleChatClick() {
-    dispatch(startChatting({ currentUserId: chatInfo.userId, currentChatId: chatId }));
-  }
-
-  const user = useSelector(state => state.user[chatInfo?.userId]);
+  const [user, setUser] = useState();
+  useEffect(() => {
+    onValue(ref(db, `users/${chatInfo?.userId}`), snapshot => {
+      setUser(snapshot.val());
+    });
+  }, [chatInfo]);
 
   useEffect(() => {
     chatInfo && onValue(ref(db, `chats/${chatId}/lastMessage`), snapshot => setLastMessage(snapshot.val()));
   }, [chatInfo])
+
+  function handleChatClick() {
+    dispatch(startChatting({ currentUserId: chatInfo.userId, currentChatId: chatId }));
+  }
 
   return (
     <Wrapper onClick={handleChatClick}>

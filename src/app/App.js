@@ -1,6 +1,8 @@
 import { useSelector } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
 import styled from "styled-components";
+import { ref, set } from "firebase/database";
+import { db } from "../app/firebase";
 
 import useDefaultDB from "../hooks/useDefaultDB";
 import Login from "../components/Login";
@@ -17,14 +19,25 @@ const Wrapper = styled.div`
 `;
 
 export default function App() {
+  const loginUser = useSelector(state => state.login);
   const isLogined = useSelector(state => state.login.isLogined);
   const isChatting = useSelector(state => state.chatting.isChatting);
 
-  useDefaultDB({ userId: "itsme", chatId: "room0" });
-  useDefaultDB({ userId: "KbVTEKlAtAe1rHogTY9u", chatId: "room1" });
-  useDefaultDB({ userId: "smPDjH1b2wpz9KXDgpXq", chatId: "room2" });
-  useDefaultDB({ userId: "COvImeFBTixfSEYM1BLm", chatId: "room3" });
-  useDefaultDB({ userId: "yoonseoID", chatId: "room4" });
+  useDefaultDB({ userId: "_defaultID_rose", chatId: "_defaultRoom_rose" });
+  useDefaultDB({ userId: "_defaultID_yerin", chatId: "_defaultRoom_yerin" });
+  useDefaultDB({ userId: "_defaultID_jisoo", chatId: "_defaultRoom_jisoo" });
+  useDefaultDB({ userId: "_defaultID_yoonseo", chatId: "_defaultRoom_yoonseo" });
+
+  if (isLogined) {
+    const newChatId = `roomOf_${loginUser.name}_${loginUser.userId}`;
+    const user = {
+      imageURL: loginUser.imageURL,
+      name: loginUser.name,
+      chatId: newChatId,
+    };
+    set(ref(db, `chats/${newChatId}/userId`), loginUser.userId);
+    set(ref(db, `users/${loginUser.userId}`), user);
+  }
 
   return (
     <Wrapper>

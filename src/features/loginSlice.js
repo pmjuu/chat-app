@@ -2,11 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   isLogined: false,
-  // userData: null,
   apiKey: "",
   userId: "",
-  userName: "",
-  userImageURL: "",
+  name: "",
+  imageURL: "",
 };
 
 const loginSlice = createSlice({
@@ -16,11 +15,10 @@ const loginSlice = createSlice({
     setUserData(state, action) {
       const userData = action.payload;
       state.isLogined = (userData ? true : false);
-      // state.userData = userData;
-      state.apiKey = userData?.apiKey;
-      state.userId = userData?.uid;
-      state.userName = userData?.displayName;
-      state.userImageURL = userData?.photoURL;
+      state.apiKey = userData.apiKey;
+      state.userId = userData.uid;
+      state.name = userData.displayName;
+      state.imageURL = userData.photoURL;
     },
   },
 });

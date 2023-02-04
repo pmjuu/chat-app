@@ -1,10 +1,8 @@
-import styled from "styled-components";
-import { db } from "../app/firebase";
-import { ref, query, orderByChild, onValue } from "firebase/database";
-
-import Chat from "./Chat";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { ref, query, orderByChild, onValue } from "firebase/database";
+import { db } from "../app/firebase";
+import styled from "styled-components";
+import Chat from "./Chat";
 
 const Wrapper = styled.div`
   display: flex;
@@ -18,29 +16,17 @@ const Wrapper = styled.div`
 
 export default function ChatList() {
   const [chatIdList, setChatIdList] = useState(null);
-  const [userIdList, setUserIdList] = useState(null);
-  const userState = useSelector(state => state.user);
 
   useEffect(() => {
     const orderedRef = query(ref(db, 'chats'), orderByChild('lastMessage/createdAt/total'));
     onValue(orderedRef, snapshot => {
-      const orderedUserIds = [];
+      const orderedChatIds = [];
       snapshot.forEach(item => {
-        orderedUserIds.push(item.val().userId);
+        orderedChatIds.push(item.key);
       });
-      setUserIdList(orderedUserIds.reverse());
+      setChatIdList(orderedChatIds.reverse());
     });
   }, [])
-
-  useEffect(() => {
-    if (userIdList) {
-      const chatIds = [];
-      userIdList.forEach(id => {
-        chatIds.push(userState[id].chatId);
-      });
-      setChatIdList(chatIds);
-    }
-  }, [userIdList])
 
   return (
     <Wrapper>

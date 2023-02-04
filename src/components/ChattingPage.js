@@ -94,11 +94,17 @@ export default function ChattingPage() {
   const dispatch = useDispatch();
   const userId = useSelector(state => state.chatting.userId);
   const chatId = useSelector(state => state.chatting.chatId);
-  const userName = useSelector(state => state.user[userId].name);
+  const [name, setName] = useState("");
   const [newText, setNewText] = useState("");
   const [messageIdList, setMessageIdList] = useState([]);
   const textRef = useRef();
   const formRef = useRef();
+
+  useEffect(() => {
+    onValue(ref(db, `users/${userId}`), snapshot => {
+      setName(snapshot.val().name);
+    });
+  }, []);
 
   const orderedRef = query(ref(db, `chats/${chatId}/messages`), orderByChild('createdAt/total'));
   useEffect(() => {
@@ -156,7 +162,7 @@ export default function ChattingPage() {
     <Wrapper>
       <div className="chattingPage-header">
         <button className="button-default" onClick={() => dispatch(endChatting())}>↩</button>
-        <span className="title">{userName}</span>
+        <span className="title">{name}</span>
         <button className="button-default warning" onClick={deleteAllMessages}>DEL</button>
       </div>
       <div className="message-list">

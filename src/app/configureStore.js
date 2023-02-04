@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "../features/userSlice";
+import defaultReducer from "../features/defaultSlice";
 import chattingReducer from "../features/chattingSlice";
 import loginReducer from "../features/loginSlice";
 import logger from "redux-logger";
 
 const store = configureStore({
   reducer: {
-    user: userReducer,
+    default: defaultReducer,
     chatting: chattingReducer,
     login: loginReducer,
   },

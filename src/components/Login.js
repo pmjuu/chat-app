@@ -1,6 +1,6 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../app/firebase";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUserData } from "../features/loginSlice";
 import styled from "styled-components";
 
@@ -33,7 +33,6 @@ const Wrapper = styled.div`
 
 export default function Login() {
   const dispatch = useDispatch();
-  const isLogined = useSelector(state => state.login.isLogined);
 
   function handleGoogleLogin() {
     const provider = new GoogleAuthProvider();
@@ -49,7 +48,7 @@ export default function Login() {
   return (
     <Wrapper>
       <h3>구글 로그인</h3>
-      {!isLogined && <div>Please Log in</div>}
+      <div>Please Log in</div>
       <button className="button-default" onClick={handleGoogleLogin}>Log in</button>
     </Wrapper>
   );

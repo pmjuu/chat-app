@@ -2,9 +2,8 @@
 배포한 사이트 -> https://pmjuu-chat.netlify.app/
 
 ## Things to add..
-- 구글 로그인 정보를 반영합니다.
+- 로그 아웃하면 초기 로그인 페이지로 돌아갑니다.
 - 새로고침해도 로그인 정보를 유지해야 합니다.
-- 친구 프로필 데이터도 firebase database로 이전할 계획입니다.
 - 프로필 정보를 변경할 수 있습니다.
 
 ## Explanation

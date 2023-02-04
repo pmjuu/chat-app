@@ -36,8 +36,8 @@ const Wrapper = styled.div`
 `;
 
 export default function Setting() {
-  function handleClick() {
-    remove(ref(db, 'chats'));
+  function deleteAll(data) {
+    remove(ref(db, `${data}`));
   }
 
   function handleGoogleLogout() {
@@ -46,7 +46,8 @@ export default function Setting() {
 
   return(
     <Wrapper>
-      <button className="button-default" onClick={handleClick}>Delete All messages</button>
+      <button className="button-default" onClick={() => deleteAll("chats")}>Delete All chats</button>
+      <button className="button-default" onClick={() => deleteAll("users")}>Delete All users</button>
       <button onClick={handleGoogleLogout}>Log Out</button>
     </Wrapper>
   );
