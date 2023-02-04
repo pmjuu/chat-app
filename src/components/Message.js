@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { ref, get, remove } from "firebase/database";
+import { ref, get, remove, onValue } from "firebase/database";
 import { db } from "../app/firebase";
 import styled from "styled-components";
 import format from "date-fns/format";
@@ -63,12 +63,19 @@ const Wrapper = styled.div`
 export default function Message({ messageId, chatId }) {
 
   const [message, setMessage] = useState(null);
-  const user = useSelector(state => state.user[message?.userId]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    get(ref(db, `chats/${chatId}/messages/${messageId}`))
-      .then(snapshot => setMessage(snapshot.val()));
+    onValue(ref(db, `chats/${chatId}/messages/${messageId}`), snapshot => {
+      setMessage(snapshot.val());
+    });
   }, []);
+
+  useEffect(() => {
+    onValue(ref(db, `users/${message?.userId}`), snapshot => {
+      setUser(snapshot.val());
+    });
+  }, [message]);
 
   function deleteMessage() {
     remove(ref(db, `chats/${chatId}/messages/${messageId}`));
