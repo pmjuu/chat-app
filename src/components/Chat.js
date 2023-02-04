@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ref, get } from "firebase/database";
+import { ref, onValue } from "firebase/database";
 import { db } from "../app/firebase";
 import styled from "styled-components";
 import { startChatting } from "../features/chattingSlice";
@@ -78,8 +78,8 @@ export default function Chat({ chatId }) {
   const [lastMessage, setLastMessage] = useState(null);
 
   useEffect(() => {
-    get(ref(db, `chats/${chatId}`)).then(snapshot => setChatInfo(snapshot.val()));
-  }, []);
+    onValue(ref(db, `chats/${chatId}`), snapshot => setChatInfo(snapshot.val()));
+  }, [chatId]);
 
   function handleChatClick() {
     dispatch(startChatting({ currentUserId: chatInfo.userId, currentChatId: chatId }));
@@ -88,8 +88,7 @@ export default function Chat({ chatId }) {
   const user = useSelector(state => state.user[chatInfo?.userId]);
 
   useEffect(() => {
-    chatInfo && get(ref(db, `chats/${chatId}/lastMessage`))
-        .then(snapshot => setLastMessage(snapshot.val()));
+    chatInfo && onValue(ref(db, `chats/${chatId}/lastMessage`), snapshot => setLastMessage(snapshot.val()));
   }, [chatInfo])
 
   return (

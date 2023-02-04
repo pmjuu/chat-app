@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { db } from "../app/firebase";
-import { ref, get, query, orderByChild } from "firebase/database";
+import { ref, query, orderByChild, onValue } from "firebase/database";
 
 import Chat from "./Chat";
 import { useEffect, useState } from "react";
@@ -22,14 +22,14 @@ export default function ChatList() {
   const userState = useSelector(state => state.user);
 
   useEffect(() => {
-    const orderByLastMessageTimestamp = query(ref(db, 'chats'), orderByChild('lastMessage/createdAt/total'));
-    get(orderByLastMessageTimestamp).then(snapshot => {
+    const orderedRef = query(ref(db, 'chats'), orderByChild('lastMessage/createdAt/total'));
+    onValue(orderedRef, snapshot => {
       const orderedUserIds = [];
       snapshot.forEach(item => {
         orderedUserIds.push(item.val().userId);
       });
       setUserIdList(orderedUserIds.reverse());
-    }).catch(error => console.error(error));
+    });
   }, [])
 
   useEffect(() => {
