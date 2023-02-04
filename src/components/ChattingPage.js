@@ -94,6 +94,7 @@ export default function ChattingPage() {
   const dispatch = useDispatch();
   const userId = useSelector(state => state.chatting.userId);
   const chatId = useSelector(state => state.chatting.chatId);
+  const currentUser = useSelector(state => state.login);
   const [name, setName] = useState("");
   const [newText, setNewText] = useState("");
   const [messageIdList, setMessageIdList] = useState([]);
@@ -141,7 +142,7 @@ export default function ChattingPage() {
       const newMessage = {
         createdAt: {...newTimestamp, total: newTotal},
         text: newText,
-        userId: "itsme",
+        userId: currentUser.userId,
       };
 
       push(ref(db, `chats/${chatId}/messages`), newMessage);
