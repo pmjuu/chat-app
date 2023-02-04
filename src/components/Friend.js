@@ -95,7 +95,7 @@ export default function Friend({ id }) {
       </div>
       <div>
         <button className="button-default" onClick={handleChatClick}>Chat</button>
-        <button className="delete" onClick={deleteFriend}>X</button>
+        {/* <button className="delete" onClick={deleteFriend}>X</button> */}
       </div>
     </Wrapper>
   );

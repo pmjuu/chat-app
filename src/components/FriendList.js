@@ -1,6 +1,5 @@
-import { onValue, ref } from "firebase/database";
+import { equalTo, onValue, orderByChild, query, ref } from "firebase/database";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { db } from "../app/firebase";
 import Friend from "./Friend";
@@ -55,42 +54,40 @@ const Wrapper = styled.div`
 
 export default function FriendList() {
   const [userIdList, setUserIdList] = useState(null);
-  const userState = useSelector(state => state.user);
   const [searchKeyword, setSearchKeyword] = useState("");
-
-  useEffect(() => {
-    onValue(ref(db, `users`), snapshot => {
-      setUserIdList(Object.keys(snapshot.val()));
-    });
-  }, []);
-
   const [isAscending, setIsAscending] = useState(true);
 
+  useEffect(() => {
+    !searchKeyword && onValue(ref(db, `users`), snapshot => {
+      setUserIdList(Object.keys(snapshot.val()));
+    });
+  }, [searchKeyword]);
+
+  useEffect(() => {
+    const nameRef = query(ref(db, `users`), orderByChild('name'), equalTo(searchKeyword));
+    onValue(nameRef, snapshot => {
+      if (snapshot.exists()) return setUserIdList(Object.keys(snapshot.val()));
+      if (searchKeyword) setUserIdList(null);
+    });
+  }, [searchKeyword]);
+
   function handleSortClick() {
-    // const sortedUserIds = [];
-    // const names = [...userState.allNames];
-
-    // isAscending === true
-    //   ? names.sort((a, b) => a.localeCompare(b))
-    //   : names.sort((a, b) => b.localeCompare(a));
-
-    // for (let name of names) {
-    //   for (let id of userState.allIds) {
-    //     if (userState[id].name === name) {
-    //       sortedUserIds.push(id);
-    //     }
-    //   }
-    // }
-
-    // setUserIdList(sortedUserIds);
-    // setIsAscending(status => !status);
+    const orderedRef = query(ref(db, `users`), orderByChild('name'));
+    onValue(orderedRef, snapshot => {
+      const orderedIds = [];
+      snapshot.forEach(item => {
+        orderedIds.push(item.key);
+      });
+      setUserIdList(isAscending ? orderedIds.reverse() : orderedIds);
+      setIsAscending(prev => !prev);
+    });
   }
 
   return (
     <Wrapper>
       <div className="search-sort">
-        <input value={searchKeyword} onChange={e => setSearchKeyword(e.target.value)} placeholder="🔍 search name" required />
-        <button onClick={handleSortClick} className="button-default">Sort</button>
+        <input value={searchKeyword} onChange={e => setSearchKeyword(e.target.value)} placeholder="🔍 search name" />
+        <button onClick={handleSortClick} className="button-default">{isAscending ? 'Descending' : 'Ascending'}</button>
       </div>
       <div className="friend-list">
         {userIdList?.length

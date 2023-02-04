@@ -14,11 +14,11 @@ const loginSlice = createSlice({
   reducers: {
     setUserData(state, action) {
       const userData = action.payload;
-      state.isLogined = (userData ? true : false);
-      state.apiKey = userData.apiKey;
-      state.userId = userData.uid;
-      state.name = userData.displayName;
-      state.imageURL = userData.photoURL;
+      state.isLogined = userData ? true : false;
+      state.apiKey = userData?.apiKey;
+      state.userId = userData?.uid;
+      state.name = userData?.displayName;
+      state.imageURL = userData?.photoURL;
     },
   },
 });

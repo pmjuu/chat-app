@@ -1,8 +1,11 @@
 import { ref, remove } from "firebase/database";
-import { db } from "../app/firebase";
+import { auth, db } from "../app/firebase";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { signOut } from "firebase/auth";
+import { setUserData } from "../features/loginSlice";
+import { Link } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -35,9 +38,15 @@ const Wrapper = styled.div`
     background-color: #AF4141;
     cursor: pointer;
   }
+
+  a {
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
 `;
 
 export default function Setting() {
+  const dispatch = useDispatch();
   const login = useSelector(state => state.login);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -50,7 +59,7 @@ export default function Setting() {
   }
 
   function handleGoogleLogout() {
-    // signOut(auth).then(dispatch(setUserData(null)));
+    signOut(auth).then(dispatch(setUserData(null)));
   }
 
   return(
@@ -61,7 +70,7 @@ export default function Setting() {
             <button className="button-default" onClick={() => deleteAll("users")}>Delete All users</button>
           </div>
         : null}
-      <button onClick={handleGoogleLogout}>Log Out</button>
+      <Link to="/" onClick={handleGoogleLogout} className="button-default">Log Out</Link>
     </Wrapper>
   );
 }

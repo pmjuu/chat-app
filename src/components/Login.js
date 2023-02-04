@@ -13,6 +13,12 @@ const Wrapper = styled.div`
   height: 100vh;
   color: white;
 
+  .title {
+    margin: 5px;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
   .button-default {
     margin: 5px;
     padding: 5px 10px;
@@ -47,9 +53,9 @@ export default function Login() {
 
   return (
     <Wrapper>
-      <h3>구글 로그인</h3>
-      <div>Please Log in</div>
-      <button className="button-default" onClick={handleGoogleLogin}>Log in</button>
+      <div className="title">Realtime Chatting</div>
+      <div>Chat with people in real time</div>
+      <button className="button-default" onClick={handleGoogleLogin}>Log in with Google</button>
     </Wrapper>
   );
 }
