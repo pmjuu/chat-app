@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   padding: 5px;
   border: 1px solid #ededed;
   border-radius: 5px;
-  background-color: white;
+  background-color: ${props => props.color};
   box-shadow: 0px 1px 5px 1px rgba(255, 255, 255, 0.3);
 
   .top-box {
@@ -37,6 +37,7 @@ const Wrapper = styled.div`
   .text-box {
     margin: 5px 0;
     padding: 3px 10px;
+    background-color: white;
     border: 1px solid #ededed;
     border-radius: 5px;
     box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.1);
@@ -95,7 +96,7 @@ export default function Message({ messageId, chatId }) {
   }
 
   return (
-    <Wrapper>
+    <Wrapper color={isMine ? '#ededed' : 'white'}>
       <div className="top-box">
         <div className="user-info">
           <img className="profile-image" src={user?.imageURL} alt="profile image"/>

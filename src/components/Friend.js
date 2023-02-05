@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { startChatting } from "../features/chattingSlice";
 import { useEffect, useState } from "react";
-import { onValue, ref, remove } from "firebase/database";
+import { onValue, ref } from "firebase/database";
 import { db } from "../app/firebase";
 
 const Wrapper = styled.div`
@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  width: 100%;
+  width: 97%;
   margin: 5px 0;
   background-color: ${props => props.color};
   color: white;

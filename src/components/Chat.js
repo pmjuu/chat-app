@@ -12,10 +12,10 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  width: 100%;
+  width: 97%;
   margin: 5px 0;
   background-color: white;
-  border: none;
+  border: 1px solid #ededed;
   border-radius: 5px;
   transition: 0.3s all ease;
 
