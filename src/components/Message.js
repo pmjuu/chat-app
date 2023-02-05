@@ -18,6 +18,12 @@ const Wrapper = styled.div`
   background-color: white;
   box-shadow: 0px 1px 5px 1px rgba(255, 255, 255, 0.3);
 
+  .top-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
   .user-info {
     display: flex;
     flex-direction: row;
@@ -33,7 +39,7 @@ const Wrapper = styled.div`
     padding: 3px 10px;
     border: 1px solid #ededed;
     border-radius: 5px;
-    box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.1);
     white-space: pre-wrap;
   }
 
@@ -44,6 +50,7 @@ const Wrapper = styled.div`
   }
 
   .delete {
+    height: 1.2rem;
     margin-left: 5px;
     font-size: 0.9rem;
     color: #AF4141;
@@ -58,12 +65,17 @@ const Wrapper = styled.div`
       cursor: pointer;
     }
   }
+
+  .none {
+    display: none;
+  }
 `;
 
 export default function Message({ messageId, chatId }) {
-
   const [message, setMessage] = useState(null);
   const [user, setUser] = useState(null);
+  const [isMine, setIsMine] = useState(false);
+  const loginInfo = useSelector(state => state.login);
 
   useEffect(() => {
     onValue(ref(db, `chats/${chatId}/messages/${messageId}`), snapshot => {
@@ -75,6 +87,8 @@ export default function Message({ messageId, chatId }) {
     onValue(ref(db, `users/${message?.userId}`), snapshot => {
       setUser(snapshot.val());
     });
+
+    if (message?.userId === loginInfo.userId) setIsMine(true);
   }, [message]);
 
   function deleteMessage() {
@@ -83,16 +97,18 @@ export default function Message({ messageId, chatId }) {
 
   return (
     <Wrapper>
-      <div className="user-info">
-        <img className="profile-image" src={user?.imageURL} alt="profile image"/>
-        <span>{user?.name}</span>
+      <div className="top-box">
+        <div className="user-info">
+          <img className="profile-image" src={user?.imageURL} alt="profile image"/>
+          <span>{user?.name}</span>
+        </div>
+        <button className={isMine ? 'delete' : 'none'} onClick={deleteMessage}>X</button>
       </div>
       <div className="text-box">
         {message?.text}
       </div>
       <div className="timestamp">
         at {message && format(new Date(message?.createdAt?.total), 'yyyy.MM.dd. HH:mm:ss')}
-        <button className="delete" onClick={deleteMessage}>X</button>
       </div>
     </Wrapper>
   );

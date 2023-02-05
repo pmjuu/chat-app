@@ -58,12 +58,10 @@ export default function FriendList() {
   const [isAscending, setIsAscending] = useState(true);
 
   useEffect(() => {
-    !searchKeyword && onValue(ref(db, `users`), snapshot => {
+    if (!searchKeyword) return onValue(ref(db, `users`), snapshot => {
       setUserIdList(Object.keys(snapshot.val()));
     });
-  }, [searchKeyword]);
 
-  useEffect(() => {
     const nameRef = query(ref(db, `users`), orderByChild('name'), equalTo(searchKeyword));
     onValue(nameRef, snapshot => {
       if (snapshot.exists()) return setUserIdList(Object.keys(snapshot.val()));

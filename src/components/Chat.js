@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, query, orderByChild, set } from "firebase/database";
 import { db } from "../app/firebase";
 import styled from "styled-components";
 import { startChatting } from "../features/chattingSlice";
@@ -73,6 +73,16 @@ const Wrapper = styled.div`
 `;
 
 export default function Chat({ chatId }) {
+  useEffect(() => {
+    onValue(query(ref(db, `chats/${chatId}/messages`), orderByChild('createdAt/total')), snapshot => {
+      let lastMessage = null;
+      snapshot.forEach(item => {
+        lastMessage = item.val();
+      });
+      set(ref(db, `chats/${chatId}/lastMessage`), lastMessage);
+    });
+  }, []);
+
   const dispatch = useDispatch();
   const [chatInfo, setChatInfo] = useState(null);
   const [lastMessage, setLastMessage] = useState(null);

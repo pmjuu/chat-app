@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { db } from "../app/firebase";
-import { ref, set, push, query, orderByChild, onValue, remove } from "firebase/database";
+import { ref, set, push, query, orderByChild, onValue } from "firebase/database";
 import { Timestamp } from "firebase/firestore";
 import styled from "styled-components";
 import Message from "./Message";
@@ -80,13 +80,10 @@ const Wrapper = styled.div`
     }
   }
 
-  .button-default.warning {
-    color: #AF4141;
-
-    :hover {
-      background-color: #AF4141;
-      color: white;
-    }
+  .search {
+    width: 30px;
+    height: 1.2rem;
+    margin: 5px;
   }
 `;
 
@@ -99,7 +96,6 @@ export default function ChattingPage() {
   const [newText, setNewText] = useState("");
   const [messageIdList, setMessageIdList] = useState([]);
   const textRef = useRef();
-  const formRef = useRef();
 
   useEffect(() => {
     onValue(ref(db, `users/${userId}`), snapshot => {
@@ -146,17 +142,15 @@ export default function ChattingPage() {
       };
 
       push(ref(db, `chats/${chatId}/messages`), newMessage);
-      set(ref(db, `chats/${chatId}/lastMessage`), newMessage);
-      // setNewText("");
       textRef.current.style.height = 'auto';
     } catch (error) {
       console.log("Error adding message data", error);
     }
   }
 
-  function deleteAllMessages() {
-    remove(ref(db, `chats/${chatId}/messages`));
-    remove(ref(db, `chats/${chatId}/lastMessage`));
+  const [searchKeyword, setSearchKeyword] = useState("");
+  function searchMessage(e) {
+    setSearchKeyword(e.target.value);
   }
 
   return (
@@ -164,12 +158,12 @@ export default function ChattingPage() {
       <div className="chattingPage-header">
         <button className="button-default" onClick={() => dispatch(endChatting())}>↩</button>
         <span className="title">{name}</span>
-        <button className="button-default warning" onClick={deleteAllMessages}>DEL</button>
+        <input className="search" onChange={searchMessage} placeholder="🔍" />
       </div>
       <div className="message-list">
         {messageIdList?.map(id => <Message key={id} messageId={id} chatId={chatId} />)}
       </div>
-      <form ref={formRef} onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <textarea className="input-text" value={newText} onChange={handleTextChange} ref={textRef} onKeyDown={onEnterPress} placeholder="type your message" rows={1} />
         <button className="button-default" type="submit">Send</button>
       </form>
