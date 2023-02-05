@@ -48,7 +48,7 @@ export default function App() {
               : <>
                   <Header />
                   <Routes>
-                    <Route path="/login" element={<Navigate to="/friends"/>} />
+                    <Route path="/login" element={<Navigate to="/friends" />} />
                     <Route path="/friends" element={<FriendList />} />
                     <Route path="/chats" element={<ChatList />} />
                   </Routes>
@@ -58,6 +58,8 @@ export default function App() {
         : <Routes>
             <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/friends" element={<Navigate to="/login" />} />
+            <Route path="/chats" element={<Navigate to="/login" />} />
           </Routes>}
     </Wrapper>
   );

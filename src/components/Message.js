@@ -79,17 +79,16 @@ export default function Message({ messageId, chatId }) {
 
   useEffect(() => {
     onValue(ref(db, `chats/${chatId}/messages/${messageId}`), snapshot => {
-      setMessage(snapshot.val());
+      const messageData = snapshot.val();
+      setMessage(messageData);
+
+      onValue(ref(db, `users/${messageData.userId}`), snapshot => {
+        setUser(snapshot.val());
+      });
+
+      if (messageData.userId === loginInfo.userId) setIsMine(true);
     });
   }, []);
-
-  useEffect(() => {
-    onValue(ref(db, `users/${message?.userId}`), snapshot => {
-      setUser(snapshot.val());
-    });
-
-    if (message?.userId === loginInfo.userId) setIsMine(true);
-  }, [message]);
 
   function deleteMessage() {
     remove(ref(db, `chats/${chatId}/messages/${messageId}`));
@@ -108,7 +107,7 @@ export default function Message({ messageId, chatId }) {
         {message?.text}
       </div>
       <div className="timestamp">
-        at {message && format(new Date(message?.createdAt?.total), 'yyyy.MM.dd. HH:mm:ss')}
+        at {message && format(new Date(message?.createdAt.total), 'yyyy.MM.dd. HH:mm:ss')}
       </div>
     </Wrapper>
   );

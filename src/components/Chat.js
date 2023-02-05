@@ -22,8 +22,8 @@ const Wrapper = styled.div`
 
   :hover {
     background-color: rgb(89, 127, 188);
-    cursor: pointer;
     color: white;
+    cursor: pointer;
   }
 
   .left-section {
@@ -84,45 +84,41 @@ export default function Chat({ chatId }) {
   }, []);
 
   const dispatch = useDispatch();
-  const [chatInfo, setChatInfo] = useState(null);
+  const [chat, setChat] = useState(null);
   const [user, setUser] = useState(null);
   const [lastMessage, setLastMessage] = useState(null);
 
   useEffect(() => {
     onValue(ref(db, `chats/${chatId}`), snapshot => {
-      const chat = snapshot.val();
-      setChatInfo(chat);
-      setLastMessage(chat.lastMessage);
+      const chatData = snapshot.val();
+      setChat(chatData);
+      setLastMessage(chatData.lastMessage);
 
-      onValue(ref(db, `users/${chat.userId}`), snapshot => {
+      onValue(ref(db, `users/${chatData.userId}`), snapshot => {
         setUser(snapshot.val());
       });
     });
   }, []);
 
   function handleChatClick() {
-    dispatch(startChatting({ currentUserId: chatInfo.userId, currentChatId: chatId }));
+    dispatch(startChatting({ currentUserId: chat.userId, currentChatId: chatId }));
   }
 
   return (
     <Wrapper onClick={handleChatClick}>
-      {chatInfo && (
-        <>
-          <div className="left-section">
-            <div>
-              <img className="profile-image" src={user?.imageURL} alt="profile" />
-            </div>
-            <div className="chat-info">
-              <div className="user-name">{user?.name}</div>
-              <div className="last-message">{lastMessage?.text}</div>
-            </div>
-          </div>
-          <div className="timestamp">
-            {lastMessage && format(new Date(lastMessage?.createdAt?.total), "yyyy.MM.dd.")}<br/>
-            {lastMessage && format(new Date(lastMessage?.createdAt?.total), "HH:mm:ss")}
-          </div>
-        </>
-      )}
+      <div className="left-section">
+        <div>
+          <img className="profile-image" src={user?.imageURL} alt="profile" />
+        </div>
+        <div className="chat-info">
+          <div className="user-name">{user?.name}</div>
+          <div className="last-message">{lastMessage?.text}</div>
+        </div>
+      </div>
+      <div className="timestamp">
+        {lastMessage && format(new Date(lastMessage?.createdAt.total), "yyyy.MM.dd.")}<br/>
+        {lastMessage && format(new Date(lastMessage?.createdAt.total), "HH:mm:ss")}
+      </div>
     </Wrapper>
   );
 }

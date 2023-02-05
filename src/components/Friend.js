@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { startChatting } from "../features/chattingSlice";
 import { useEffect, useState } from "react";
 import { onValue, ref, remove } from "firebase/database";
@@ -19,6 +19,10 @@ const Wrapper = styled.div`
   border-radius: 5px;
   box-shadow: 0px 1px 5px 1px rgba(255, 255, 255, 0.2);
 
+  .current-user {
+    background-color: gray;
+  }
+
   .left-section {
     display: flex;
     flex-direction: row;
@@ -31,7 +35,10 @@ const Wrapper = styled.div`
 
   .user-name {
     width: 80px;
+    margin: 0 5px;
     text-align: left;
+    font-size: 1.1rem;
+    font-weight: 600;
   }
 
   .button-default {
@@ -71,6 +78,7 @@ export default function Friend({ id }) {
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState("");
+  const login = useSelector(state => state.login);
 
   useEffect(() => {
     onValue(ref(db, `users/${id}`), snapshot => {
@@ -88,10 +96,11 @@ export default function Friend({ id }) {
   }
 
   return (
-    <Wrapper>
+    <Wrapper className={id === login.userId ? 'current-user' : ''}>
       <div className="left-section">
         <img className="profile-image" src={user?.imageURL} alt={`${user?.name}'s profile`} />
         <span className="user-name">{user?.name}</span>
+        {id === login.userId && <span>(current user)</span>}
       </div>
       <div>
         <button className="button-default" onClick={handleChatClick}>Chat</button>

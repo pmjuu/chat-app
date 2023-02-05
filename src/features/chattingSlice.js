@@ -4,7 +4,6 @@ const initialState = {
   isChatting: false,
   userId: null,
   chatId: null,
-  messageIds: [],
 };
 
 const chattingSlice = createSlice({

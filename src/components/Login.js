@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, setPersistence, browserSessionPersistence, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../app/firebase";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../features/loginSlice";
@@ -10,7 +10,7 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  height: 100vh;
+  height: 90vh;
   color: white;
 
   .title {
@@ -39,6 +39,15 @@ const Wrapper = styled.div`
 
 export default function Login() {
   const dispatch = useDispatch();
+
+  setPersistence(auth, browserSessionPersistence)
+    .then(() => {
+      onAuthStateChanged(auth, user => {
+        if (user) {
+          dispatch(setUserData(JSON.parse(JSON.stringify(user))));
+        }
+      })
+    });
 
   function handleGoogleLogin() {
     const provider = new GoogleAuthProvider();
