@@ -12,6 +12,8 @@ const Wrapper = styled.div`
   width: 100vw;
   max-width: 400px;
   height: 85vh;
+  max-height: 85vh;
+  overflow: scroll;
 
   .search-sort {
     display: flex;

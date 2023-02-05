@@ -13,15 +13,11 @@ const Wrapper = styled.div`
 
   width: 100%;
   margin: 5px 0;
-  background-color: rgb(70, 70, 70);
+  background-color: ${props => props.color};
   color: white;
   border: 1px solid #ededed;
   border-radius: 5px;
   box-shadow: 0px 1px 5px 1px rgba(255, 255, 255, 0.2);
-
-  .current-user {
-    background-color: gray;
-  }
 
   .left-section {
     display: flex;
@@ -56,22 +52,6 @@ const Wrapper = styled.div`
     background-color: rgb(122, 173, 255);
     cursor: pointer;
   }
-
-  .delete {
-    margin-left: 5px;
-    font-size: 0.9rem;
-    color: #AF4141;
-    background-color: white;
-    border: 1px solid #ededed;
-    border-radius: 5px;
-    transition: 0.3s all ease;
-
-    :hover {
-      background-color: #AF4141;
-      color: white;
-      cursor: pointer;
-    }
-  }
 `;
 
 export default function Friend({ id }) {
@@ -91,12 +71,8 @@ export default function Friend({ id }) {
     dispatch(startChatting({ currentUserId: userId, currentChatId: user.chatId }));
   }
 
-  function deleteFriend() {
-    remove(ref(db, `users/${id}`));
-  }
-
   return (
-    <Wrapper className={id === login.userId ? 'current-user' : ''}>
+    <Wrapper color={id === login.userId ? 'gray' : 'rgb(70, 70, 70)'}>
       <div className="left-section">
         <img className="profile-image" src={user?.imageURL} alt={`${user?.name}'s profile`} />
         <span className="user-name">{user?.name}</span>
@@ -104,7 +80,6 @@ export default function Friend({ id }) {
       </div>
       <div>
         <button className="button-default" onClick={handleChatClick}>Chat</button>
-        {/* <button className="delete" onClick={deleteFriend}>X</button> */}
       </div>
     </Wrapper>
   );

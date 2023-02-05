@@ -15,9 +15,8 @@ const Wrapper = styled.div`
   width: 100%;
   margin: 5px 0;
   background-color: white;
-  border: 1px solid #ededed;
+  border: none;
   border-radius: 5px;
-  box-shadow: 0px 1px 5px 1px rgba(0, 0, 0, 0.1);
   transition: 0.3s all ease;
 
   :hover {

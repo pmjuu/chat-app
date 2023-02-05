@@ -66,8 +66,8 @@ export default function Setting() {
     <Wrapper>
       {isAdmin
         ? <div>
-            <button className="button-default" onClick={() => deleteAll("chats")}>Delete All chats</button>
-            <button className="button-default" onClick={() => deleteAll("users")}>Delete All users</button>
+            {/* <button className="button-default" onClick={() => deleteAll("chats")}>Delete All chats</button>
+            <button className="button-default" onClick={() => deleteAll("users")}>Delete All users</button> */}
           </div>
         : null}
       <Link to="/" onClick={handleGoogleLogout} className="button-default">Log Out</Link>
