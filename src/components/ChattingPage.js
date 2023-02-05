@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { db } from "../app/firebase";
-import { ref, set, push, query, orderByChild, onValue } from "firebase/database";
+import { ref, push, query, orderByChild, onValue } from "firebase/database";
 import { Timestamp } from "firebase/firestore";
 import styled from "styled-components";
 import Message from "./Message";
@@ -142,6 +142,7 @@ export default function ChattingPage() {
       };
 
       push(ref(db, `chats/${chatId}/messages`), newMessage);
+      setNewText("");
       textRef.current.style.height = 'auto';
     } catch (error) {
       console.log("Error adding message data", error);

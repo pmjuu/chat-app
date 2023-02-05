@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { ref, get, remove, onValue } from "firebase/database";
+import { ref, remove, onValue } from "firebase/database";
 import { db } from "../app/firebase";
 import styled from "styled-components";
 import format from "date-fns/format";

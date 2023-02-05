@@ -85,22 +85,20 @@ export default function Chat({ chatId }) {
 
   const dispatch = useDispatch();
   const [chatInfo, setChatInfo] = useState(null);
+  const [user, setUser] = useState(null);
   const [lastMessage, setLastMessage] = useState(null);
 
   useEffect(() => {
-    onValue(ref(db, `chats/${chatId}`), snapshot => setChatInfo(snapshot.val()));
-  }, []);
+    onValue(ref(db, `chats/${chatId}`), snapshot => {
+      const chat = snapshot.val();
+      setChatInfo(chat);
+      setLastMessage(chat.lastMessage);
 
-  const [user, setUser] = useState();
-  useEffect(() => {
-    onValue(ref(db, `users/${chatInfo?.userId}`), snapshot => {
-      setUser(snapshot.val());
+      onValue(ref(db, `users/${chat.userId}`), snapshot => {
+        setUser(snapshot.val());
+      });
     });
-  }, [chatInfo]);
-
-  useEffect(() => {
-    chatInfo && onValue(ref(db, `chats/${chatId}/lastMessage`), snapshot => setLastMessage(snapshot.val()));
-  }, [chatInfo])
+  }, []);
 
   function handleChatClick() {
     dispatch(startChatting({ currentUserId: chatInfo.userId, currentChatId: chatId }));

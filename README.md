@@ -8,8 +8,8 @@
 ## Explanation
 ### Overview
 - 친구 목록 페이지(`/friends`), 채팅 목록 페이지(`/chats`), 채팅 페이지(URL없음) 가 있습니다.
-- App 컴포넌트가 처음에 렌더링될 때 `useDefaultDB` 커스텀 훅을 이용해서 firebase database에 기본 데이터를 설정합니다.
-- 친구 프로필 데이터는 Redux state에 미리 입력해두었습니다.
+- App 컴포넌트가 처음에 렌더링될 때 `useDefaultDB` 커스텀 훅을 이용해서 firebase database에 default 데이터를 입력합니다.
+- default 친구 프로필 데이터는 Redux state에 미리 입력해두었습니다.
 
 ### 친구 목록 페이지
 - 친구 목록 페이지에는 사용자를 포함한 친구 프로필이 처음에 입력된 순서대로 나열되어 있습니다.
